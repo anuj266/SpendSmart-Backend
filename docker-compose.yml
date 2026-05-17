@@ -1,0 +1,26 @@
+version: '3.8'
+
+# ─────────────────────────────────────────────────────────────
+#  SpendSmart – LOCAL DEV docker-compose
+#  Only RabbitMQ runs in Docker.
+#  MySQL  → your local installation (port 3306)
+#  All Spring Boot services → mvn spring-boot:run
+# ─────────────────────────────────────────────────────────────
+
+services:
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"       # AMQP – services connect via localhost:5672
+      - "15672:15672"     # Management UI – http://localhost:15672  (guest/guest)
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
